@@ -15,12 +15,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.trening_tz.GsonClass.RequestForSchedule;
-import com.example.trening_tz.GsonClass.User;
-import com.example.trening_tz.service.MessageBox;
+import com.example.trening_tz.Requests.ResponseCallback;
+import com.example.trening_tz.Requests.UniversalRequest;
+import com.example.trening_tz.dto.RequestForSchedule;
+import com.example.trening_tz.dto.User;
+import com.example.trening_tz.dialogs.MessageBox;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -93,64 +97,25 @@ public class Schedule extends AppCompatActivity {
 
         RequestForSchedule requestForSchedule = new RequestForSchedule(6, 3, 2025, user.getUserId(), user.getIdGroup(), "");
 
-        String stringRequest = gson.toJson(requestForSchedule);
 
+        Map<String, String> headers = new HashMap<>();
+        headers.put("token", user.getToken());
+        headers.put("Content-Type", "application/json; charset = utf-8");
+        headers.put("ContentLength", "181595");
+        headers.put("ETag", "W/\"2c55b-+EIv6+N1+X9WqUvu4o028gA92yY\"");
+        headers.put("Connection", "keep-alive");
+        headers.put("Keep-Alive", "timeout=5");
 
-
-        RequestBody requestBody = RequestBody.create(mediaType, stringRequest);
-
-        Request request = new Request.Builder()
-                .url("https://app2.spbgasu.ru/rasp/getPersonalForUserSearch")
-                .addHeader("token", user.getToken())
-                .addHeader("X-Powered-By", "Express")
-                .addHeader("Content-Type", "application/json; charset = utf-8")
-                .addHeader("ContentLength", "181595")
-                .addHeader("ETag", "W/\"2c55b-+EIv6+N1+X9WqUvu4o028gA92yY\"")
-                .addHeader("Connection", "keep-alive")
-                .addHeader("Keep-Alive", "timeout=5")
-                //.addHeader("group_id", user.getIdGroup())
-                .post(requestBody)
-                .build();
-
-        Log.d("TAG", "Запрос сформирован");
-
-        client.newCall(request).enqueue(new Callback() {
+        UniversalRequest.connect(gson.toJson(requestForSchedule), "rasp/getRaspSearch", Schedule.this, User.class, headers, new ResponseCallback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("TAG", "Не удалось отрправить запрос");
-                MessageBox messageError = new MessageBox("Ошибка подключения", "Не удалось отправить запрос");
-                messageError.show(getSupportFragmentManager(), "custom");
-                e.printStackTrace();
-            }
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("TAG", "onResponse is called");
-                try (ResponseBody responseBody = response.body()) {
-                    if (!response.isSuccessful()) {
-                        Log.d("TAG", "Response abount schedule isn't successful");
-
-                        if (response.code() != 401) {
-                            MessageBox messageError = new MessageBox("Ошибка подключения", "Ошибка подключения: " + response.message() + ". Код ошибки: " + String.valueOf(response.code()));
-                            messageError.show(getSupportFragmentManager(), "custom");
-                        } else {
-                            MessageBox messageError = new MessageBox("Ошибка подключения", "Неверный логин или пароль");
-                            messageError.show(getSupportFragmentManager(), "custom");
-                        }
-                        throw new IOException("Запрос к серверу не был успешен: " +
-                                response.code() + " " + response.message());
-                    }
-
-                    Log.d("TAG", "Запрос по поводу расписания успешен");
-
-                    MessageBox messageError = new MessageBox("Подключение успешно?", "Получилось? " + response.message() + " Код " + String.valueOf(response.code()));
-                    messageError.show(getSupportFragmentManager(), "custom");
-
-
-                    String jsonString = responseBody.string();
-
-                    Log.d("TAG", jsonString);
-
-                }
+            //*************************
+            //ПОМЕНЯТЬ НА НОРМАЛЬНЫЙ КЛАСС ДЛЯ РАСПИСАНИЯ, ТЕСТОВАЯ ВЕРСИЯ УНИВЕРСАЛЬНОГО ЗАПРОСА
+            //*************************
+            public <User> void onResponse(int code, User gettingUser) {
+                     if (code == 200) {
+                         MessageBox messageError = new MessageBox("Чот там", String.valueOf(code));
+                         messageError.show(getSupportFragmentManager(), "custom");
+                     }
             }
         });
     }

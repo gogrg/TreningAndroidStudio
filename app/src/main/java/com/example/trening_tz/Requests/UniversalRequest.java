@@ -2,10 +2,11 @@ package com.example.trening_tz.Requests;
 
 import android.util.Log;
 
-import com.example.trening_tz.GsonClass.User;
-import com.example.trening_tz.service.MessageBox;
+import com.example.trening_tz.dto.User;
+import com.example.trening_tz.dialogs.MessageBox;
 
 import java.io.IOException;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -22,25 +23,30 @@ import com.google.gson.Gson;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class Connecting {
-    public interface ResponseCallback {
-        void onResponse(int codeResponce, User user);
+public class UniversalRequest implements ResponseCallback {
+    @Override
+    public <T> void onResponse(int codeResponce, T getData) {
+
     }
-    public static void connect(String login, String password, AppCompatActivity activity, ResponseCallback callback) {
+
+    public static <T> void connect(String stringRequest, String url, AppCompatActivity activity, Class<T> tClass, Map<String, String> headers, ResponseCallback callback) {
 
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
-        String stringRecurest = "{\"login\":\"" + login + "\", \"pass\":\"" + password + "\"}";
+        RequestBody requestBody = RequestBody.create(mediaType, stringRequest);
 
-        RequestBody requestBody = RequestBody.create(mediaType, stringRecurest);
+        Request.Builder requestBuilder = new Request.Builder()
+                .url("https://app2.spbgasu.ru/" + url)
+                .header("x-route-type", "mobile")
+                .post(requestBody);
 
-        Request request = new Request.Builder()
-                .url("https://app2.spbgasu.ru/auth/login")
-                .addHeader("x-route-type", "mobile")
-                .post(requestBody)
-                .build();
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            requestBuilder.addHeader(entry.getKey(), entry.getValue());
+        }
+
+        Request request = requestBuilder.build();
 
 
         client.newCall(request).enqueue(new Callback() {
@@ -66,10 +72,10 @@ public class Connecting {
                                 response.code() + " " + response.message());
                     } else {
                         Gson gson = new Gson();
-                        User user = gson.fromJson(responseBody.string(), User.class);
+                        T getData = gson.fromJson(responseBody.string(), tClass);
 
                         activity.runOnUiThread(() -> {
-                            callback.onResponse(response.code(), user);
+                            callback.onResponse(response.code(), getData);
                         });
                     }
 

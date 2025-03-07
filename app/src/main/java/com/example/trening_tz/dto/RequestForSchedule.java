@@ -1,4 +1,4 @@
-package com.example.trening_tz.GsonClass;
+package com.example.trening_tz.dto;
 
 public class RequestForSchedule {
     private class DateGson {

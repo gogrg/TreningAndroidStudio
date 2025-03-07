@@ -18,22 +18,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.trening_tz.Requests.Connecting;
-import com.example.trening_tz.service.MessageBox;
-
-import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-
-import com.example.trening_tz.GsonClass.User;
+import com.example.trening_tz.Requests.ResponseCallback;
+import com.example.trening_tz.Requests.UniversalRequest;
+import com.example.trening_tz.dto.DataEntry;
+import com.example.trening_tz.dto.User;
 import com.google.gson.Gson;
 
 import com.auth0.jwt.JWT;
@@ -159,12 +150,14 @@ public class MainActivity extends AppCompatActivity {
                     DecodedJWT decodedJWT = JWT.decode(user.getToken());
 
                     if (decodedJWT.getExpiresAt().before(new Date())) {
-                        Connecting.connect(editLogin.getText().toString(), editPassword.getText().toString(), MainActivity.this, new Connecting.ResponseCallback() {
+                        DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
+
+                        UniversalRequest.connect(gson.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
                             @Override
-                            public void onResponse(int code, User gettingUser) {
+                            public <User> void onResponse(int code, User gettingUser) {
                                 codeResponse[0] = code;
                                 if (code == 200) {
-                                    user = gettingUser;
+                                    user = (com.example.trening_tz.dto.User) gettingUser;
                                     jsonUser = gson.toJson(user);
                                     sharedSetting.putString(PREF_USER_JSON, jsonUser);
                                     sharedSetting.apply();
@@ -177,12 +170,16 @@ public class MainActivity extends AppCompatActivity {
                         goToSchedule(user);
                     }
                 } else {
-                    Connecting.connect(editLogin.getText().toString(), editPassword.getText().toString(), MainActivity.this, new Connecting.ResponseCallback() {
+
+                    DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
+
+
+                    UniversalRequest.connect(gson.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
                         @Override
-                        public void onResponse(int code, User gettingUser) {
+                        public <User> void onResponse(int code, User gettingUser) {
                             codeResponse[0] = code;
                             if (code == 200) {
-                                user = gettingUser;
+                                user = (com.example.trening_tz.dto.User) gettingUser;
                                 jsonUser = gson.toJson(user);
                                 sharedSetting.putString(PREF_USER_JSON, jsonUser);
                                 sharedSetting.putString(PREF_LOGIN, editLogin.getText().toString());
