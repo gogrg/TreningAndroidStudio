@@ -1,7 +1,6 @@
 package com.example.trening_tz;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
@@ -25,21 +24,17 @@ import com.example.trening_tz.Requests.ResponseCallback;
 import com.example.trening_tz.Requests.UniversalRequest;
 import com.example.trening_tz.dto.DataEntry;
 import com.example.trening_tz.dto.User;
-import com.google.gson.Gson;
+import com.example.trening_tz.servise.GsonClass;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.trening_tz.servise.KeysFileEntry;
+import com.example.trening_tz.servise.NamesFilesSetting;
+import com.example.trening_tz.servise.StaticSharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
-    private static SharedPreferences settingEntry;
-    private static final String PREF_FILE_SETTING = "FILE_SETTING_ENTRY";
-    private static final String PREF_LOGIN = "login";
-    private static final String PREF_PASSWORD = "password";
-    private static final String PREF_USER_JSON = "user_json";
-
     private User user = new User();
     private String jsonUser;
-    private Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         //получение значений для всякого разного
-        settingEntry = getSharedPreferences(PREF_FILE_SETTING, MODE_PRIVATE);
 
         //объявление и присваивание виджетов
         EditText editLogin = findViewById(R.id.editTextLogin);
@@ -62,12 +56,25 @@ public class MainActivity extends AppCompatActivity {
         Button buttonEntry = findViewById(R.id.buttonEntry);
 
         //присвоение значений логина с паролем из памяти
-        editLogin.setText(settingEntry.getString(PREF_LOGIN, ""));
-        editPassword.setText(settingEntry.getString(PREF_PASSWORD, ""));
+        editLogin.setText(StaticSharedPreferences.getString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                KeysFileEntry.LOGIN.getValue(),
+                "",
+                MainActivity.this));
+
+        editPassword.setText(StaticSharedPreferences.getString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                KeysFileEntry.PASSWORD.getValue(),
+                "",
+                MainActivity.this));
+
+
         //если есть - достаём данные о токене, айдишники и прочее
-        jsonUser = settingEntry.getString(PREF_USER_JSON, "");
+        jsonUser = StaticSharedPreferences.getString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                KeysFileEntry.USER_JSON.getValue(),
+                "",
+                MainActivity.this);
+
         if (!jsonUser.isEmpty()) {
-            user = gson.fromJson(jsonUser, User.class);
+            user = GsonClass.fromJson(jsonUser, User.class);
         }
 
         //для пароля отображалка кнопки видимости пароля
@@ -144,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         buttonEntry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor sharedSetting = settingEntry.edit();
+
                 int codeResponse[] = new int[1];
                 if (!user.getToken().isEmpty()) {
                     DecodedJWT decodedJWT = JWT.decode(user.getToken());
@@ -152,15 +159,17 @@ public class MainActivity extends AppCompatActivity {
                     if (decodedJWT.getExpiresAt().before(new Date())) {
                         DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
 
-                        UniversalRequest.connect(gson.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
+                        UniversalRequest.connect(GsonClass.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
                             @Override
                             public <User> void onResponse(int code, User gettingUser) {
                                 codeResponse[0] = code;
                                 if (code == 200) {
                                     user = (com.example.trening_tz.dto.User) gettingUser;
-                                    jsonUser = gson.toJson(user);
-                                    sharedSetting.putString(PREF_USER_JSON, jsonUser);
-                                    sharedSetting.apply();
+                                    jsonUser = GsonClass.toJson(user);
+                                    StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                                            KeysFileEntry.USER_JSON.getValue(),
+                                            jsonUser,
+                                            MainActivity.this);
 
                                     goToSchedule(user);
                                 }
@@ -174,17 +183,27 @@ public class MainActivity extends AppCompatActivity {
                     DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
 
 
-                    UniversalRequest.connect(gson.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
+                    UniversalRequest.connect(GsonClass.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
                         @Override
                         public <User> void onResponse(int code, User gettingUser) {
                             codeResponse[0] = code;
                             if (code == 200) {
                                 user = (com.example.trening_tz.dto.User) gettingUser;
-                                jsonUser = gson.toJson(user);
-                                sharedSetting.putString(PREF_USER_JSON, jsonUser);
-                                sharedSetting.putString(PREF_LOGIN, editLogin.getText().toString());
-                                sharedSetting.putString(PREF_PASSWORD, editPassword.getText().toString());
-                                sharedSetting.apply();
+                                jsonUser = GsonClass.toJson(user);
+                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                                        KeysFileEntry.USER_JSON.getValue(),
+                                        jsonUser,
+                                        MainActivity.this);
+
+                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                                        KeysFileEntry.LOGIN.getValue(),
+                                        editLogin.getText().toString(),
+                                        MainActivity.this);
+
+                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
+                                        KeysFileEntry.PASSWORD.getValue(),
+                                        editLogin.getText().toString(),
+                                        MainActivity.this);
 
                                 goToSchedule(user);
                             }
@@ -212,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void goToSchedule(User user) {
-        Intent intent = new Intent(MainActivity.this, Schedule.class);
+        Intent intent = new Intent(MainActivity.this, ScheduleActivity.class);
         intent.putExtra("userData", user);
         startActivity(intent);
         finish();

@@ -1,5 +1,7 @@
 package com.example.trening_tz.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class RequestForSchedule {
     private class DateGson {
         private int day;
@@ -43,42 +45,46 @@ public class RequestForSchedule {
     }
 
     DateGson date;
-    String employee_id;
-    String group_id;
-    String cabinet_id;
+    @SerializedName("employee_id") String employeeId;
+    @SerializedName("group_id") String groupId;
+    @SerializedName("cabinet_id") String cabinetId;
 
     public RequestForSchedule (int year, int month, int day, String employee_id, String group_id, String cabinet_id) {
         date = new DateGson(year, month, day);
-        this.employee_id = employee_id;
-        this.group_id = group_id;
-        this.cabinet_id = cabinet_id;
-    }
-
-    public void setEmployee_id(String employee_id) {
-        this.employee_id = employee_id;
-    }
-
-    public void setGroup_id(String group_id) {
-        this.group_id = group_id;
-    }
-
-    public void setCabinet_id(String cabinet_id) {
-        this.cabinet_id = RequestForSchedule.this.cabinet_id;
-    }
-
-    public String getEmployee_id() {
-        return employee_id;
-    }
-
-    public String getGroup_id() {
-        return group_id;
-    }
-
-    public String getCabinet_id() {
-        return cabinet_id;
+        this.employeeId = employee_id;
+        this.groupId = group_id;
+        this.cabinetId = cabinet_id;
     }
 
     public DateGson getDate() {
         return date;
+    }
+
+    public void setDate(DateGson date) {
+        this.date = date;
+    }
+
+    public String getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getCabinetId() {
+        return cabinetId;
+    }
+
+    public void setCabinetId(String cabinetId) {
+        this.cabinetId = cabinetId;
     }
 }

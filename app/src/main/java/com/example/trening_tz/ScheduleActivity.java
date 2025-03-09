@@ -1,7 +1,6 @@
 package com.example.trening_tz;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,31 +16,21 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.trening_tz.Requests.ResponseCallback;
 import com.example.trening_tz.Requests.UniversalRequest;
+import com.example.trening_tz.dialogs.MessageBox;
 import com.example.trening_tz.dto.RequestForSchedule;
 import com.example.trening_tz.dto.User;
-import com.example.trening_tz.dialogs.MessageBox;
-import com.google.gson.Gson;
+import com.example.trening_tz.servise.GsonClass;
+import com.example.trening_tz.servise.KeysFileEntry;
+import com.example.trening_tz.servise.NamesFilesSetting;
+import com.example.trening_tz.servise.StaticSharedPreferences;
+import com.example.trening_tz.dto.schedule.Schedule;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 
-public class Schedule extends AppCompatActivity {
-    private static final String PREF_FILE_SETTINR_ENTRY = "FILE_SETTING_ENTRY";
-    private static final String PREF_LOGIN = "login";
-    private static final String PREF_PASSWORD = "password";
-    private static final String PREF_USER_JSON = "user_json";
+public class ScheduleActivity extends AppCompatActivity {
 
-    Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +52,11 @@ public class Schedule extends AppCompatActivity {
                     try {
                         Log.d("TAG", "Переход между активностями произошёл. (?)");
                         //обнуление полей и user в MainActivity
-                        SharedPreferences settingEntry = getSharedPreferences(PREF_FILE_SETTINR_ENTRY, MODE_PRIVATE);
-                        SharedPreferences.Editor sharedSetting = settingEntry.edit();
-                        sharedSetting.putString(PREF_USER_JSON, "");
-                        sharedSetting.putString(PREF_LOGIN, "");
-                        sharedSetting.putString(PREF_PASSWORD, "");
-                        sharedSetting.apply();
+                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.USER_JSON.getValue(), ScheduleActivity.this);
+                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.LOGIN.getValue(), ScheduleActivity.this);
+                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.PASSWORD.getValue(), ScheduleActivity.this);
 
-                        Intent intent = new Intent(Schedule.this, MainActivity.class);
+                        Intent intent = new Intent(ScheduleActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();
                     } catch (Exception e) {
@@ -86,14 +72,11 @@ public class Schedule extends AppCompatActivity {
         ConstraintLayout blockSchedule = findViewById(R.id.containerInScrollView);
 
 
-        TextView testView = new TextView(Schedule.this);
+        TextView testView = new TextView(ScheduleActivity.this);
         testView.setText(user.getUserId());
         testView.setTextSize(12);
         blockSchedule.addView(testView);
 
-        OkHttpClient client = new OkHttpClient();
-
-        MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
         RequestForSchedule requestForSchedule = new RequestForSchedule(6, 3, 2025, user.getUserId(), user.getIdGroup(), "");
 
@@ -106,14 +89,18 @@ public class Schedule extends AppCompatActivity {
         headers.put("Connection", "keep-alive");
         headers.put("Keep-Alive", "timeout=5");
 
-        UniversalRequest.connect(gson.toJson(requestForSchedule), "rasp/getRaspSearch", Schedule.this, User.class, headers, new ResponseCallback() {
+        //было, через передачу айди группы и т.д. и даты
+        UniversalRequest.connect(GsonClass.toJson(requestForSchedule), "rasp/getRaspSearch", ScheduleActivity.this, Schedule.class, headers, new ResponseCallback() {
+
+        //UniversalRequest.connect("", "rasp/getPersonalForUserSearch", ScheduleActivity.this, User.class, headers, new ResponseCallback() {
             @Override
             //*************************
             //ПОМЕНЯТЬ НА НОРМАЛЬНЫЙ КЛАСС ДЛЯ РАСПИСАНИЯ, ТЕСТОВАЯ ВЕРСИЯ УНИВЕРСАЛЬНОГО ЗАПРОСА
             //*************************
-            public <User> void onResponse(int code, User gettingUser) {
+            public <Schedule> void onResponse(int code, Schedule gettingSchedule) {
                      if (code == 200) {
-                         MessageBox messageError = new MessageBox("Чот там", String.valueOf(code));
+                         com.example.trening_tz.dto.schedule.Schedule schedule = (com.example.trening_tz.dto.schedule.Schedule) gettingSchedule;
+                         MessageBox messageError = new MessageBox("Чот там", schedule.getPayload().getMon().getSixth().get(0).getSubject());
                          messageError.show(getSupportFragmentManager(), "custom");
                      }
             }

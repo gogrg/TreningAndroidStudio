@@ -2,7 +2,7 @@ package com.example.trening_tz.Requests;
 
 import android.util.Log;
 
-import com.example.trening_tz.dto.User;
+import com.example.trening_tz.dto.*;
 import com.example.trening_tz.dialogs.MessageBox;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 
-import com.google.gson.Gson;
+import com.example.trening_tz.servise.GsonClass;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,6 +40,7 @@ public class UniversalRequest implements ResponseCallback {
         Request.Builder requestBuilder = new Request.Builder()
                 .url("https://app2.spbgasu.ru/" + url)
                 .header("x-route-type", "mobile")
+                .addHeader("X-Powered-By", "Express")
                 .post(requestBody);
 
         for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -71,8 +72,11 @@ public class UniversalRequest implements ResponseCallback {
                         throw new IOException("Запрос к серверу не был успешен: " +
                                 response.code() + " " + response.message());
                     } else {
-                        Gson gson = new Gson();
-                        T getData = gson.fromJson(responseBody.string(), tClass);
+                        String jsonString = responseBody.string();
+
+                        T getData = GsonClass.fromJson(jsonString, tClass);
+
+                        Log.d("TAG", "JSON response: " + jsonString);
 
                         activity.runOnUiThread(() -> {
                             callback.onResponse(response.code(), getData);
