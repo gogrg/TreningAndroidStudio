@@ -100,7 +100,7 @@ public class ScheduleActivity extends AppCompatActivity {
             public <Schedule> void onResponse(int code, Schedule gettingSchedule) {
                      if (code == 200) {
                          com.example.trening_tz.dto.schedule.Schedule schedule = (com.example.trening_tz.dto.schedule.Schedule) gettingSchedule;
-                         MessageBox messageError = new MessageBox("Чот там", schedule.getPayload().getMon().getSixth().get(0).getSubject());
+                         MessageBox messageError = new MessageBox("Чот там", schedule.getDay(1).getSomeVariantDay(5).get(0).getSubject().toString());
                          messageError.show(getSupportFragmentManager(), "custom");
                      }
             }

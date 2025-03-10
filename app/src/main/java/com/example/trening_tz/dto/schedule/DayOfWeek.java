@@ -1,10 +1,10 @@
-package com.example.trening_tz.dto.schedule.daysWeek;
+package com.example.trening_tz.dto.schedule;
 
 import com.example.trening_tz.dto.schedule.structureLesson.Lesson;
 
 import java.util.List;
 
-public class Thu {
+public class DayOfWeek {
     private List<Lesson> first;
     private List<Lesson> second;
     private List<Lesson> third;
@@ -22,6 +22,45 @@ public class Thu {
     private List<Lesson> fifteenth;
     private List<Lesson> sixteenth;
 
+
+    public List<Lesson> getSomeVariantDay(int numVariantDay) {
+        switch (numVariantDay) {
+            case 0:
+                return first;
+            case 1:
+                return second;
+            case 2:
+                return third;
+            case 3:
+                return fourth;
+            case 4:
+                return fifth;
+            case 5:
+                return sixth;
+            case 6:
+                return seventh;
+            case 7:
+                return eighth;
+            case 8:
+                return ninth;
+            case 9:
+                return tenth;
+            case 10:
+                return eleventh;
+            case 11:
+                return twelfth;
+            case 12:
+                return thirteenth;
+            case 13:
+                return fourteenth;
+            case 14:
+                return fifteenth;
+            case 15:
+                return sixteenth;
+            default:
+                throw new IllegalArgumentException("Недопустимый номер варианта расписания на день: " + numVariantDay);
+        }
+    }
     public List<Lesson> getFirst() {
         return first;
     }
