@@ -2,11 +2,10 @@ package com.example.trening_tz.Requests;
 
 import android.util.Log;
 
-import com.example.trening_tz.dto.*;
+import com.example.trening_tz.Requests.requestsSettings.RequestOptions;
 import com.example.trening_tz.dialogs.MessageBox;
 
 import java.io.IOException;
-import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -20,32 +19,29 @@ import okhttp3.ResponseBody;
 
 import com.example.trening_tz.servise.GsonClass;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 
 public class UniversalRequest implements ResponseCallback {
+    private static final OkHttpClient client = new OkHttpClient();
     @Override
     public <T> void onResponse(int codeResponce, T getData) {
 
     }
 
-    public static <T> void connect(String stringRequest, String url, AppCompatActivity activity, Class<T> tClass, Map<String, String> headers, ResponseCallback callback) {
+    public static <T> void connect(RequestOptions <T>requestOptions, ResponseCallback callback) {
 
-        OkHttpClient client = new OkHttpClient();
+
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
-        RequestBody requestBody = RequestBody.create(mediaType, stringRequest);
+        RequestBody requestBody = RequestBody.create(mediaType, requestOptions.getRequest());
 
         Request.Builder requestBuilder = new Request.Builder()
-                .url("https://app2.spbgasu.ru/" + url)
-                .header("x-route-type", "mobile")
-                .addHeader("X-Powered-By", "Express")
+                .url(requestOptions.getUrl())
+                .header("x-route-type", "mobile")  //оставлено, чтобы предыдущие заголовки перезаписывались этим, а дальше добавлялись актуальные
                 .post(requestBody);
 
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
-            requestBuilder.addHeader(entry.getKey(), entry.getValue());
-        }
+        requestOptions.getHeaders().forEach(requestBuilder::addHeader);
 
         Request request = requestBuilder.build();
 
@@ -64,21 +60,21 @@ public class UniversalRequest implements ResponseCallback {
 
                         if (response.code() != 401) {
                             MessageBox messageError = new MessageBox("Ошибка подключения", "Ошибка подключения: " + response.message() + ". Код ошибки: " + String.valueOf(response.code()));
-                            messageError.show(activity.getSupportFragmentManager(), "custom");
+                            messageError.show(requestOptions.getActivity().getSupportFragmentManager(), "custom");
                         } else {
                             MessageBox messageError = new MessageBox("Ошибка подключения", "Неверный логин или пароль");
-                            messageError.show(activity.getSupportFragmentManager(), "custom");
+                            messageError.show(requestOptions.getActivity().getSupportFragmentManager(), "custom");
                         }
                         throw new IOException("Запрос к серверу не был успешен: " +
                                 response.code() + " " + response.message());
                     } else {
                         String jsonString = responseBody.string();
 
-                        T getData = GsonClass.fromJson(jsonString, tClass);
+                        T getData = GsonClass.fromJson(jsonString, requestOptions.gettClass());
 
                         Log.d("TAG", "JSON response: " + jsonString);
 
-                        activity.runOnUiThread(() -> {
+                        requestOptions.getActivity().runOnUiThread(() -> {
                             callback.onResponse(response.code(), getData);
                         });
                     }

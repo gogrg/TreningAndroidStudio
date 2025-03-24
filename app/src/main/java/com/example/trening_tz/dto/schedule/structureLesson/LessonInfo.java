@@ -1,6 +1,6 @@
 package com.example.trening_tz.dto.schedule.structureLesson;
 
-class LessonInfo {
+public class LessonInfo {
     private String type;
     private int number;
     private String time;

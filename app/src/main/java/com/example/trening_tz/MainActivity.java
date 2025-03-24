@@ -18,11 +18,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import com.example.trening_tz.Requests.ResponseCallback;
 import com.example.trening_tz.Requests.UniversalRequest;
-import com.example.trening_tz.dto.DataEntry;
+import com.example.trening_tz.Requests.requestsSettings.RequestEntryOptions;
+import com.example.trening_tz.dto.DataForRequestEntry;
 import com.example.trening_tz.dto.User;
 import com.example.trening_tz.servise.GsonClass;
 
@@ -34,7 +34,6 @@ import com.example.trening_tz.servise.StaticSharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
     private User user = new User();
-    private String jsonUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +67,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         //если есть - достаём данные о токене, айдишники и прочее
-        jsonUser = StaticSharedPreferences.getString(NamesFilesSetting.FILE_ENTRY.getValue(),
-                KeysFileEntry.USER_JSON.getValue(),
-                "",
-                MainActivity.this);
+            user =
+                    StaticSharedPreferences.<User>getObject(NamesFilesSetting.FILE_ENTRY.getValue(),
+                            KeysFileEntry.USER_JSON.getValue(),
+                            "",
+                            User.class,
+                            User::new,
+                            MainActivity.this);
 
-        if (!jsonUser.isEmpty()) {
-            user = GsonClass.fromJson(jsonUser, User.class);
-        }
 
         //для пароля отображалка кнопки видимости пароля
         if (editPassword.getText().toString().isEmpty()) {
@@ -152,23 +151,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                int codeResponse[] = new int[1];
                 if (!user.getToken().isEmpty()) {
                     DecodedJWT decodedJWT = JWT.decode(user.getToken());
 
                     if (decodedJWT.getExpiresAt().before(new Date())) {
-                        DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
+                        DataForRequestEntry dataForRequestEntry = new DataForRequestEntry(editLogin.getText().toString(), editPassword.getText().toString());
 
-                        UniversalRequest.connect(GsonClass.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
+                        UniversalRequest.connect(new RequestEntryOptions(dataForRequestEntry, MainActivity.this), new ResponseCallback() {
                             @Override
                             public <User> void onResponse(int code, User gettingUser) {
-                                codeResponse[0] = code;
                                 if (code == 200) {
                                     user = (com.example.trening_tz.dto.User) gettingUser;
-                                    jsonUser = GsonClass.toJson(user);
                                     StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
                                             KeysFileEntry.USER_JSON.getValue(),
-                                            jsonUser,
+                                            GsonClass.toJson(user),
                                             MainActivity.this);
 
                                     goToSchedule(user);
@@ -180,19 +176,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
 
-                    DataEntry dataEntry = new DataEntry(editLogin.getText().toString(), editPassword.getText().toString());
+                    DataForRequestEntry dataForRequestEntry = new DataForRequestEntry(editLogin.getText().toString(), editPassword.getText().toString());
 
 
-                    UniversalRequest.connect(GsonClass.toJson(dataEntry), "auth/login", MainActivity.this, User.class, new HashMap<String, String>(), new ResponseCallback() {
+                    UniversalRequest.connect(new RequestEntryOptions(dataForRequestEntry, MainActivity.this), new ResponseCallback() {
                         @Override
                         public <User> void onResponse(int code, User gettingUser) {
-                            codeResponse[0] = code;
                             if (code == 200) {
                                 user = (com.example.trening_tz.dto.User) gettingUser;
-                                jsonUser = GsonClass.toJson(user);
                                 StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
                                         KeysFileEntry.USER_JSON.getValue(),
-                                        jsonUser,
+                                        GsonClass.toJson(user),
                                         MainActivity.this);
 
                                 StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),

@@ -1,10 +1,10 @@
 package com.example.trening_tz.dto;
 
-public class DataEntry {
+public class DataForRequestEntry {
     String login;
     String pass;
 
-    public DataEntry(String login, String password) {
+    public DataForRequestEntry(String login, String password) {
         this.login = login;
         this.pass = password;
     }

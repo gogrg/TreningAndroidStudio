@@ -2,7 +2,7 @@ package com.example.trening_tz.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class RequestForSchedule {
+public class DataForRequestSchedule {
     private class DateGson {
         private int day;
         private int month;
@@ -49,7 +49,7 @@ public class RequestForSchedule {
     @SerializedName("group_id") String groupId;
     @SerializedName("cabinet_id") String cabinetId;
 
-    public RequestForSchedule (int year, int month, int day, String employee_id, String group_id, String cabinet_id) {
+    public DataForRequestSchedule(int year, int month, int day, String employee_id, String group_id, String cabinet_id) {
         date = new DateGson(year, month, day);
         this.employeeId = employee_id;
         this.groupId = group_id;

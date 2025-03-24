@@ -16,8 +16,10 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.trening_tz.Requests.ResponseCallback;
 import com.example.trening_tz.Requests.UniversalRequest;
+import com.example.trening_tz.Requests.requestsSettings.RequestScheduleOptions;
+import com.example.trening_tz.buildUI.BuildSchedule;
 import com.example.trening_tz.dialogs.MessageBox;
-import com.example.trening_tz.dto.RequestForSchedule;
+import com.example.trening_tz.dto.DataForRequestSchedule;
 import com.example.trening_tz.dto.User;
 import com.example.trening_tz.servise.GsonClass;
 import com.example.trening_tz.servise.KeysFileEntry;
@@ -25,8 +27,7 @@ import com.example.trening_tz.servise.NamesFilesSetting;
 import com.example.trening_tz.servise.StaticSharedPreferences;
 import com.example.trening_tz.dto.schedule.Schedule;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
 
 
 public class ScheduleActivity extends AppCompatActivity {
@@ -45,63 +46,43 @@ public class ScheduleActivity extends AppCompatActivity {
 
         Button buttonExit = findViewById(R.id.buttonExit);
 
-        if (buttonExit != null) {
-            buttonExit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        Log.d("TAG", "Переход между активностями произошёл. (?)");
-                        //обнуление полей и user в MainActivity
-                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.USER_JSON.getValue(), ScheduleActivity.this);
-                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.LOGIN.getValue(), ScheduleActivity.this);
-                        StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.PASSWORD.getValue(), ScheduleActivity.this);
 
-                        Intent intent = new Intent(ScheduleActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } catch (Exception e) {
-                        Log.d("TAG", "Ошибка при возврате в MainActivity: " + e.getMessage());
-                    }
+        buttonExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Log.d("TAG", "Переход между активностями произошёл. (?)");
+                    //обнуление полей и user в MainActivity
+                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.USER_JSON.getValue(), ScheduleActivity.this);
+                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.LOGIN.getValue(), ScheduleActivity.this);
+                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.PASSWORD.getValue(), ScheduleActivity.this);
+
+                    Intent intent = new Intent(ScheduleActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } catch (Exception e) {
+                    Log.d("TAG", "Ошибка при возврате в MainActivity: " + e.getMessage());
                 }
-            });
-        } else {
-            Log.d("TAG", "Кнопка не найдена");
-        }
+            }
+        });
+
 
         User user = (User) getIntent().getSerializableExtra("userData");
         ConstraintLayout blockSchedule = findViewById(R.id.containerInScrollView);
 
+        LocalDate currentDate = LocalDate.now();
+        DataForRequestSchedule dataForRequestSchedule = new DataForRequestSchedule(currentDate.getYear(), currentDate.getMonthValue(), currentDate.getDayOfMonth(), user.getUserId(), user.getIdGroup(), "");
 
-        TextView testView = new TextView(ScheduleActivity.this);
-        testView.setText(user.getUserId());
-        testView.setTextSize(12);
-        blockSchedule.addView(testView);
-
-
-        RequestForSchedule requestForSchedule = new RequestForSchedule(6, 3, 2025, user.getUserId(), user.getIdGroup(), "");
-
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("token", user.getToken());
-        headers.put("Content-Type", "application/json; charset = utf-8");
-        headers.put("ContentLength", "181595");
-        headers.put("ETag", "W/\"2c55b-+EIv6+N1+X9WqUvu4o028gA92yY\"");
-        headers.put("Connection", "keep-alive");
-        headers.put("Keep-Alive", "timeout=5");
-
-        //было, через передачу айди группы и т.д. и даты
-        UniversalRequest.connect(GsonClass.toJson(requestForSchedule), "rasp/getRaspSearch", ScheduleActivity.this, Schedule.class, headers, new ResponseCallback() {
-
-        //UniversalRequest.connect("", "rasp/getPersonalForUserSearch", ScheduleActivity.this, User.class, headers, new ResponseCallback() {
+        UniversalRequest.connect(new RequestScheduleOptions(dataForRequestSchedule, ScheduleActivity.this, user), new ResponseCallback() {
             @Override
-            //*************************
-            //ПОМЕНЯТЬ НА НОРМАЛЬНЫЙ КЛАСС ДЛЯ РАСПИСАНИЯ, ТЕСТОВАЯ ВЕРСИЯ УНИВЕРСАЛЬНОГО ЗАПРОСА
-            //*************************
             public <Schedule> void onResponse(int code, Schedule gettingSchedule) {
                      if (code == 200) {
                          com.example.trening_tz.dto.schedule.Schedule schedule = (com.example.trening_tz.dto.schedule.Schedule) gettingSchedule;
-                         MessageBox messageError = new MessageBox("Чот там", schedule.getDay(1).getSomeVariantDay(5).get(0).getSubject().toString());
+//TODO нахуй MessageBox. Подумать, откуда вызывать создание расписание. Возможно подумать над переименованием класса BuildSchedule в просто Build и создание методов для разных случаев
+                         MessageBox messageError = new MessageBox("Чот там", schedule.getDay(0).getSomeVariantDay(6).get(0).getSubject().toString());
                          messageError.show(getSupportFragmentManager(), "custom");
+
+                         BuildSchedule.build(schedule, 8, blockSchedule, ScheduleActivity.this);
                      }
             }
         });
