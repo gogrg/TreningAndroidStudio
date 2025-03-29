@@ -10,6 +10,7 @@ public class User implements Serializable {
     @SerializedName("user_id") private String userId;
     private String extra;
     @SerializedName("id_group" )private String idGroup;
+    private Photo photo;
 
     public User() {
         token = "";
@@ -19,12 +20,23 @@ public class User implements Serializable {
         idGroup = "";
     }
 
-    public User(String token, String type, String userId, String extra, String idGroup) {
+    public User(String token, String type, String userId, String extra, String idGroup, Photo photo) {
         this.token = token;
         this.type = type;
         this.userId = userId;
         this.extra = extra;
         this.idGroup = idGroup;
+        this.photo = photo;
+    }
+
+
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     public void setToken(String token) {

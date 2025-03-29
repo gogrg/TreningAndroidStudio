@@ -1,6 +1,8 @@
 package com.example.trening_tz.dto.schedule.structureLesson;
 
-class Teacher {
+import com.example.trening_tz.dto.Photo;
+
+public class Teacher {
 
     private String guid;
     private String fullname;

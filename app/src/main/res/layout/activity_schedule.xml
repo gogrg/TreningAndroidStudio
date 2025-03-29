@@ -5,14 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F4F4F4"
     tools:context=".ScheduleActivity">
 
     <ScrollView
         android:id="@+id/blockSchedule"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="#33A2A8"
+        android:background="#F4F4F4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.666"
@@ -31,7 +31,7 @@
         android:id="@+id/constraintLayout2"
         android:layout_width="0dp"
         android:layout_height="107dp"
-        android:background="#80398E"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/blockSchedule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -42,11 +42,26 @@
             android:id="@+id/buttonExit"
             android:layout_width="117dp"
             android:layout_height="46dp"
-            android:layout_marginStart="292dp"
             android:layout_marginTop="28dp"
+            android:layout_marginEnd="2dp"
             android:enabled="true"
             android:text="Exit"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/imageButtonUser"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/background_person"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/icon_person" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
