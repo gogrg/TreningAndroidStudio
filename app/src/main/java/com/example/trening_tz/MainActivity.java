@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //если есть - достаём данные о токене, айдишники и прочее
-            user =
-                    StaticSharedPreferences.<User>getObject(NamesFilesSetting.FILE_ENTRY.getValue(),
+            user = StaticSharedPreferences.<User>getObject(NamesFilesSetting.FILE_ENTRY.getValue(),
                             KeysFileEntry.USER_JSON.getValue(),
                             "",
                             User.class,

@@ -1,8 +1,10 @@
 package com.example.trening_tz.buildUI;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,13 +19,15 @@ import com.example.trening_tz.dto.schedule.structureLesson.Lesson;
 import java.util.List;
 
 public class BuildSchedule {
+        private final static int numberDaysInWeek = 6;
 
     public static void build(Schedule schedule, int numberCurrentWeek, ConstraintLayout constraintLayout, AppCompatActivity activity) {
         constraintLayout.removeAllViews();
 
+
         ConstraintLayout weekConstraintLayouy[] = new ConstraintLayout[6];
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < numberDaysInWeek; i++) {
             try {
                 weekConstraintLayouy[i] = createDay(getNameDay(i),schedule.getDay(i).getSomeVariantDay(numberCurrentWeek), activity);
             } catch (Exception e) {
@@ -60,14 +64,18 @@ public class BuildSchedule {
         background.setColor(0xFFFFFFFF);
         layout.setBackground(background);
 
-        TextView textViewNameDay = createTextView(nameDay, 15,0xFF828180, activity, 0, true, layout.getId(), layout.getId(), new int[] {20, 10, 0, 0},  ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        TextView textViewNameDay = createTextView(nameDay,
+                15,0xFF828180, activity,
+                0, true,
+                layout.getId(), layout.getId(), new int[] {20, 10, 0, 0},
+                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(textViewNameDay);
 
         if (listLessons != null) {
             //первая пара
             ConstraintLayout inputLayout = createLesson(listLessons.get(0), activity);
             ConstraintLayout.LayoutParams paramsInputLayout = new ConstraintLayout.LayoutParams
-                    (ConstraintLayout.LayoutParams.MATCH_PARENT, 400);
+                    (ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
 
             paramsInputLayout.leftToLeft = layout.getId();
             paramsInputLayout.topToBottom = textViewNameDay.getId();
@@ -179,6 +187,15 @@ public class BuildSchedule {
         imageTeacher.setLayoutParams(layoutParams);
         layout.addView(imageTeacher);
 
+        //ФИО преподавателя
+        TextView textViewNameTeacher = createTextView(lesson.getFirstTeacher().getFullname(),
+                12, Color.BLACK, activity,
+                1, false,
+                imageTeacher.getId(), textViewNameLesson.getId(),
+                new int[] {40, 45, 0, 0},
+                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+        layout.addView(textViewNameTeacher);
+
 
         return layout;
     }
@@ -190,7 +207,7 @@ public class BuildSchedule {
         TextView textView = new TextView(activity);
         textView.setId(View.generateViewId());
         textView.setText(text);
-        textView.setTextSize(textSize);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
         textView.setTextColor(textColor);
         textView.setTypeface(null, Typeface.BOLD);
 
