@@ -41,4 +41,11 @@ public class StaticSharedPreferences {
         editor.remove(key);
         editor.apply();
     }
+
+    public static void clear(String fileSetting, AppCompatActivity activity) {
+        preferences = activity.getSharedPreferences(fileSetting, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.apply();
+    }
 }

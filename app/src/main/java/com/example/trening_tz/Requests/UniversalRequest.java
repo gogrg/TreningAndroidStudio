@@ -24,7 +24,7 @@ import com.example.trening_tz.servise.GsonClass;
 public class UniversalRequest implements ResponseCallback {
     private static final OkHttpClient client = new OkHttpClient();
     @Override
-    public <T> void onResponse(int codeResponce, T getData) {
+    public <T> void onResponse(int codeResponse, T gettingData) {
 
     }
 

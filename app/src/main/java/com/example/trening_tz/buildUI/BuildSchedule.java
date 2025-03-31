@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -121,81 +122,43 @@ public class BuildSchedule {
         layout.setBackgroundColor(0xFFFFFFFF);
         layout.setId(View.generateViewId());
 
-        //номер пары
-        TextView textViewNumberLesson = createTextView(String.valueOf(lesson.getLessonInfo().getNumber()),
-                12, 0xFFC14424, activity,
-                0, true,
-                layout.getId(), layout.getId(),
-                new int[]{20, 10, 0, 0},
-                60, 60);
-        textViewNumberLesson.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
-        textViewNumberLesson.setBackgroundResource(R.drawable.back_lesson_number);
-        layout.addView(textViewNumberLesson);
+        LayoutInflater inflater = LayoutInflater.from(activity);
 
-        //время пары
-        TextView textViewLessonTime = createTextView(lesson.getLessonInfo().getTime(),
-                12, 0xFF828180, activity,
-                1, true,
-                textViewNumberLesson.getId(), layout.getId(),
-                new int[]{20, 10, 0, 0},
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(textViewLessonTime);
+        inflater.inflate(R.layout.lesson, layout, true);
 
-        //тип пары
-        TextView textViewTypeLesson = createTextView(lesson.getLessonInfo().getType(),
-                12, 0xFF828180, activity,
-                1, true,
-                textViewLessonTime.getId(), layout.getId(),
-                new int[]{20, 10, 0, 0},
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(textViewTypeLesson);
+        layout.post(() -> {
+            try {
+                //номер пары
+                TextView universalView = layout.findViewById(R.id.textViewNumberLesson);
+                universalView.setText(String.valueOf(lesson.getLessonInfo().getNumber()));
 
-        //кабинет
-        TextView textViewRoom = createTextView(lesson.getRoom().getName(),
-                14, 0xFF292827, activity,
-                2, true,
-                layout.getId(), layout.getId(),
-                new int[] {0, 10, 40, 0},
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(textViewRoom);
+                //время пары
+                universalView = layout.findViewById(R.id.textViewTimeLesson);
+                universalView.setText(lesson.getLessonInfo().getTime());
 
-        //название пары
-        TextView textViewNameLesson = createTextView(lesson.getSubject(),
-                14, 0xFF292827, activity,
-                0, false,
-                layout.getId(), textViewNumberLesson.getId(),
-                new int[] {40, 20, 0, 0},
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(textViewNameLesson);
+                //тип пары
+                universalView = layout.findViewById(R.id.textViewTypeLesson);
+                universalView.setText(lesson.getLessonInfo().getType());
 
-        //фото преподавателя
-        ImageView imageTeacher = new ImageView(activity);
-        imageTeacher.setId(View.generateViewId());
-        imageTeacher.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        imageTeacher.setPadding(10, 10, 10, 15);
-        imageTeacher.setBackgroundResource(R.drawable.background_person);
-        if (lesson.getFirstTeacher().getPhoto() != null) {
-            lesson.getFirstTeacher().getPhoto().setSmallImage(imageTeacher, R.drawable.icon_person, activity);
-        } else {
-            imageTeacher.setImageResource(R.drawable.icon_person);
-        }
+                //кабинет
+                universalView = layout.findViewById(R.id.textViewRoom);
+                universalView.setText(lesson.getRoom().getName());
 
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(70, 70);
-        layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID;
-        layoutParams.topToBottom = textViewNameLesson.getId();
-        layoutParams.setMargins(40, 40, 0, 0);
-        imageTeacher.setLayoutParams(layoutParams);
-        layout.addView(imageTeacher);
+                //название пары
+                universalView = layout.findViewById(R.id.textViewNameLesson);
+                universalView.setText(lesson.getSubject());
 
-        //ФИО преподавателя
-        TextView textViewNameTeacher = createTextView(lesson.getFirstTeacher().getFullname(),
-                12, Color.BLACK, activity,
-                1, false,
-                imageTeacher.getId(), textViewNameLesson.getId(),
-                new int[] {40, 45, 0, 0},
-                ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-        layout.addView(textViewNameTeacher);
+                //фио препода
+                universalView = layout.findViewById(R.id.textViewFullNameTeacher);
+                universalView.setText(lesson.getFirstTeacher().getFullname());
 
+                //фотка препода
+                ImageView imageViewTeacher = layout.findViewById(R.id.imageTeacher);
+                lesson.getFirstTeacher().getPhoto().setSmallImage(imageViewTeacher, R.drawable.icon_person, activity);
+            } catch (Exception e) {
+                Log.e("Build Lesson", e.toString());
+            }
+        });
 
         return layout;
     }

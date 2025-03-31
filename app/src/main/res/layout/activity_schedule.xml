@@ -53,7 +53,7 @@
             android:id="@+id/imageButtonUser"
             android:layout_width="75dp"
             android:layout_height="75dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="13dp"
             android:layout_marginTop="13dp"
             android:background="@drawable/background_person"
             android:padding="10dp"

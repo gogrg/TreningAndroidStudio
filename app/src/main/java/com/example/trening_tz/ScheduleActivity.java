@@ -15,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.trening_tz.Requests.LoginControler;
 import com.example.trening_tz.Requests.ResponseCallback;
 import com.example.trening_tz.Requests.UniversalRequest;
 import com.example.trening_tz.Requests.requestsSettings.RequestCurrentWeekOptions;
@@ -59,9 +60,7 @@ public class ScheduleActivity extends AppCompatActivity {
                 try {
                     Log.d("TAG", "Переход между активностями произошёл. (?)");
                     //обнуление полей и user в MainActivity
-                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.USER_JSON.getValue(), ScheduleActivity.this);
-                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.LOGIN.getValue(), ScheduleActivity.this);
-                    StaticSharedPreferences.remove(NamesFilesSetting.FILE_ENTRY.getValue(), KeysFileEntry.PASSWORD.getValue(), ScheduleActivity.this);
+                    LoginControler.logout(ScheduleActivity.this);
 
                     Intent intent = new Intent(ScheduleActivity.this, MainActivity.class);
                     startActivity(intent);

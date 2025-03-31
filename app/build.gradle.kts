@@ -34,6 +34,7 @@ android {
 
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+    implementation(libs.fragment)
     implementation (libs.glide)
     annotationProcessor (libs.compiler)
     implementation(libs.okhttp)
