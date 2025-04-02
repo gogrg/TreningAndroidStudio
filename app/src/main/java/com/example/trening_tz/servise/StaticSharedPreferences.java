@@ -24,14 +24,14 @@ public class StaticSharedPreferences {
         return preferences.getString(key, defaultValue);
     }
 
-    public static <T> T getObject(String fileSetting, String key, String defaultValue, Class<T> tClass, Supplier<T> supplier, AppCompatActivity activity) {
+    public static <T> T getObject(String fileSetting, String key, String defaultValue, Class<T> tClass, AppCompatActivity activity) {
         preferences = activity.getSharedPreferences(fileSetting, MODE_PRIVATE);
         String jsonString = preferences.getString(key, defaultValue);
         if (jsonString != defaultValue) {
             return GsonClass.fromJson(jsonString, tClass);
         }
         else {
-            return supplier.get();
+            return null;
         }
     }
 

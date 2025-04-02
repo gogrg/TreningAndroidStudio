@@ -17,17 +17,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import java.util.Date;
-
+import com.example.trening_tz.Requests.LoginController;
 import com.example.trening_tz.Requests.ResponseCallback;
-import com.example.trening_tz.Requests.UniversalRequest;
-import com.example.trening_tz.Requests.requestsSettings.RequestEntryOptions;
-import com.example.trening_tz.dto.DataForRequestEntry;
+import com.example.trening_tz.dialogs.MessageBox;
 import com.example.trening_tz.dto.User;
-import com.example.trening_tz.servise.GsonClass;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.trening_tz.servise.KeysFileEntry;
 import com.example.trening_tz.servise.NamesFilesSetting;
 import com.example.trening_tz.servise.StaticSharedPreferences;
@@ -69,9 +63,8 @@ public class MainActivity extends AppCompatActivity {
         //если есть - достаём данные о токене, айдишники и прочее
             user = StaticSharedPreferences.<User>getObject(NamesFilesSetting.FILE_ENTRY.getValue(),
                             KeysFileEntry.USER_JSON.getValue(),
-                            "",
+                            null,
                             User.class,
-                            User::new,
                             MainActivity.this);
 
 
@@ -150,54 +143,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (!user.getToken().isEmpty()) {
-                    DecodedJWT decodedJWT = JWT.decode(user.getToken());
-
-                    if (decodedJWT.getExpiresAt().before(new Date())) {
-                        DataForRequestEntry dataForRequestEntry = new DataForRequestEntry(editLogin.getText().toString(), editPassword.getText().toString());
-
-                        UniversalRequest.connect(new RequestEntryOptions(dataForRequestEntry, MainActivity.this), new ResponseCallback() {
-                            @Override
-                            public <User> void onResponse(int code, User gettingUser) {
-                                if (code == 200) {
-                                    user = (com.example.trening_tz.dto.User) gettingUser;
-                                    StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
-                                            KeysFileEntry.USER_JSON.getValue(),
-                                            GsonClass.toJson(user),
-                                            MainActivity.this);
-
-                                    goToSchedule(user);
-                                }
-                            }
-                        });
-                    } else {
-                        goToSchedule(user);
-                    }
+                if (user!= null) {
+                    goToSchedule(user);
                 } else {
-
-                    DataForRequestEntry dataForRequestEntry = new DataForRequestEntry(editLogin.getText().toString(), editPassword.getText().toString());
-
-
-                    UniversalRequest.connect(new RequestEntryOptions(dataForRequestEntry, MainActivity.this), new ResponseCallback() {
+                    LoginController.login(editLogin.getText().toString(), editPassword.getText().toString(), MainActivity.this, new ResponseCallback() {
                         @Override
-                        public <User> void onResponse(int code, User gettingUser) {
-                            if (code == 200) {
-                                user = (com.example.trening_tz.dto.User) gettingUser;
-                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
-                                        KeysFileEntry.USER_JSON.getValue(),
-                                        GsonClass.toJson(user),
-                                        MainActivity.this);
+                        public <T> void onResponse(int codeResponse, T gettingData) {
+                            com.example.trening_tz.dto.User user = (com.example.trening_tz.dto.User) gettingData;
 
-                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
-                                        KeysFileEntry.LOGIN.getValue(),
-                                        editLogin.getText().toString(),
-                                        MainActivity.this);
-
-                                StaticSharedPreferences.putString(NamesFilesSetting.FILE_ENTRY.getValue(),
-                                        KeysFileEntry.PASSWORD.getValue(),
-                                        editLogin.getText().toString(),
-                                        MainActivity.this);
-
+                            if (user == null) {
+                                MessageBox messageError = new MessageBox("Ошибка подключения", "Не удалось получить данные");
+                                messageError.show(MainActivity.this.getSupportFragmentManager(), "custom");
+                            } else {
                                 goToSchedule(user);
                             }
                         }

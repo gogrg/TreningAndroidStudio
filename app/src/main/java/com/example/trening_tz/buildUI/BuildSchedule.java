@@ -26,7 +26,7 @@ public class BuildSchedule {
         constraintLayout.removeAllViews();
 
 
-        ConstraintLayout weekConstraintLayouy[] = new ConstraintLayout[6];
+        ConstraintLayout weekConstraintLayouy[] = new ConstraintLayout[numberDaysInWeek];
 
         for (int i = 0; i < numberDaysInWeek; i++) {
             try {
@@ -92,11 +92,11 @@ public class BuildSchedule {
                 inputLayout = createLesson(listLessons.get(i), activity);
 
                 paramsInputLayout = new ConstraintLayout.LayoutParams
-                        (ConstraintLayout.LayoutParams.MATCH_PARENT, 400);
+                        (ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
 
                 paramsInputLayout.leftToLeft = layout.getId();
                 paramsInputLayout.topToBottom = currentPreviousId;
-                paramsInputLayout.setMargins(10, 20, 0, 30);
+                paramsInputLayout.setMargins(10, 20, 0, 0);
 
                 inputLayout.setLayoutParams(paramsInputLayout);
                 layout.addView(inputLayout);

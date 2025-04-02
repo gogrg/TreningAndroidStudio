@@ -6,6 +6,7 @@ import com.example.trening_tz.Requests.requestsSettings.RequestOptions;
 import com.example.trening_tz.dialogs.MessageBox;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -30,8 +31,6 @@ public class UniversalRequest implements ResponseCallback {
 
     public static <T> void connect(RequestOptions <T>requestOptions, ResponseCallback callback) {
 
-
-
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 
         RequestBody requestBody = RequestBody.create(mediaType, requestOptions.getRequest());
@@ -50,6 +49,11 @@ public class UniversalRequest implements ResponseCallback {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
+
+                Log.d("TAG", "Internet connection is failed");
+                requestOptions.getActivity().runOnUiThread(() -> {
+                    callback.onResponse(-1, null);
+                });
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -58,7 +62,7 @@ public class UniversalRequest implements ResponseCallback {
                     if (!response.isSuccessful()) {
                         Log.d("TAG", "Response isn't successful");
 
-                        if (response.code() != 401) {
+                        if (response.code() != HttpURLConnection.HTTP_UNAUTHORIZED) {
                             MessageBox messageError = new MessageBox("Ошибка подключения", "Ошибка подключения: " + response.message() + ". Код ошибки: " + String.valueOf(response.code()));
                             messageError.show(requestOptions.getActivity().getSupportFragmentManager(), "custom");
                         } else {
