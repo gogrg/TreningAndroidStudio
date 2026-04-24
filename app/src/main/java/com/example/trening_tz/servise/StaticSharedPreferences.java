@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 public class StaticSharedPreferences {
     private static SharedPreferences preferences;
 
+
     public static void putString(String fileSetting, String key, String value, AppCompatActivity activity) {
         preferences = activity.getSharedPreferences(fileSetting, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();

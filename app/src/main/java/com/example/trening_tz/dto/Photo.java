@@ -33,7 +33,7 @@ public class Photo implements Serializable {
     public void setSmallImage(ImageView imageView, int drawable, AppCompatActivity activity) {
         if (small != null) {
             Glide.with(activity)
-                    .load("https://app2.spbgasu.ru" + small)
+                    .load(small)
                     .error(drawable)
                     .into(imageView);
         } else {
@@ -44,7 +44,7 @@ public class Photo implements Serializable {
     public void setSmallImage(ImageButton imageButton, int drawable, AppCompatActivity activity) {
         if (small != null) {
             Glide.with(activity)
-                    .load("https://app2.spbgasu.ru" + small)
+                    .load(small)
                     .error(drawable)
                     .into(imageButton);
         } else {

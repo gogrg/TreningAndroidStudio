@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/textViewNumberLesson"
@@ -57,30 +57,31 @@
 
     <TextView
         android:id="@+id/textViewNameLesson"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="40dp"
         android:text="TextView"
         android:textColor="#292827"
         android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNumberLesson" />
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/imageTeacher"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginStart="40dp"
         android:layout_marginTop="40dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/background_person"
-        android:paddingLeft="7dp"
-        android:paddingTop="7dp"
-        android:paddingRight="7dp"
-        android:paddingBottom="7dp"
-        android:scaleType="centerInside"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewNameLesson"
+        app:shapeAppearance="@style/BackGroundPerson"
         app:srcCompat="@drawable/icon_person" />
 
     <TextView
@@ -92,6 +93,7 @@
         android:text="TextView"
         android:textColor="#292827"
         android:textSize="12dp"
+        app:shapeAppearance="@style/GreyText2"
         app:layout_constraintStart_toEndOf="@+id/imageTeacher"
         app:layout_constraintTop_toBottomOf="@+id/textViewNameLesson" />
 </androidx.constraintlayout.widget.ConstraintLayout>

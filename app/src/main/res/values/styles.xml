@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="BackGroundPerson">
+        <item name="cornerFamily"> rounded </item>
+        <item name="cornerSize"> 50% </item>
+    </style>
+
+    <style name="SeparatorLessonsInDay">
+        <item name="android:divider"> @drawable/separator_lessons </item>
+        <item name="android:showDividers"> middle</item>
+        <item name="android:dividerPadding"> 16dp</item>
+    </style>
+
+    <style name="Header1">
+        <item name="android:textSize"> 26sp </item>
+        <!-- TODO спросить, если я уже делал дешугаринг, можно ли игнорировать <item name="android:lineHeight">32sp</item> -->
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Header2">
+        <item name="android:textSize"> 20sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Header3">
+        <item name="android:textSize"> 16sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Header4">
+        <item name="android:textSize"> 14sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Header5">
+        <item name="android:textSize"> 10sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text1">
+        <item name="android:textSize"> 16sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text2">
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text3">
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="GreyText1">
+        <item name="android:textSize"> 16sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="GreyText2">
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="GreyText3">
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:layout_height"> wrap_content </item>
+        <item name="android:layout_width"> wrap_content </item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+</resources>

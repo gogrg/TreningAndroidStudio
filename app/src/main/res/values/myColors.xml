@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- <inteface> -->
+        <color name="white">#FFFFFFFF</color>
+        <color name="black">#FF292827</color>
+        <color name="grey">#FFC7C5C4</color>
+
+    <!-- <beton> -->
+        <color name="beton">#FF828180</color>
+        <color name="betonLight">#FFF4F4F4</color>
+
+
+    <!-- <brick> -->
+        <color name="brick">#FFC14424</color>
+        <color name="brickOrange">#FFF98012</color>
+        <color name="brickLight">#FFFFF8F6</color>
+
+    <!-- <build> -->
+        <color name="building">#FF013A56</color>
+        <color name="architectural">#FF66A3BF</color>
+        <color name="five">#FFFEF1C4</color>
+        <color name="egorova">#FFFEF1C4</color>
+        <color name="serpukhovskaya">#FFB8986C</color>
+        <color name="courlandskaya">#FFD16966</color>
+        <color name="mainBuilding">#FFF9C472</color>
+        <color name="rosenstein">#FFE894B7</color>
+
+        <color name="buildingLight">#FFCCD8DD</color>
+        <color name="architecturalLight">#FFE0EDF2</color>
+        <color name="fiveLight">#FFFFFCF3</color>
+        <color name="egorovaLight">#FFF9F7F0</color>
+        <color name="serpukhovskayaLight">#FFF1EAE2</color>
+        <color name="courlandskayaLight">#FFF6E1E0</color>
+        <color name="mainBuildingLight">#FFFEF3E3</color>
+        <color name="rosensteinLight">#FFFAEAF1</color>
+
+    <!-- <additionally> -->
+        <color name="teams">#FF5864C2</color>
+        <color name="teamsLight">#FF99A2F4</color>
+        <color name="green">#FF6B8162</color>
+        <color name="greenLight">#99F1FAED</color>
+
+</resources>

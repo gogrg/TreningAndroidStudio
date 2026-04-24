@@ -3,6 +3,7 @@ package com.example.trening_tz.fragments;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,7 +34,7 @@ public class FragmentSchedule extends Fragment {
 
         AppCompatActivity activity = (AppCompatActivity) requireActivity();
 
-        ConstraintLayout blockSchedule = view.findViewById(R.id.containerSchedule);
+        LinearLayout blockSchedule = view.findViewById(R.id.containerSchedule);
 
         RequestSchedule.getSchedule(activity, user, new ResponseCallback() {
             @Override
